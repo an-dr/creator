@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 walkdir = "2.5"
+cursive = "0.21"

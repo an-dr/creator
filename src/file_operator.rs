@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{fs, io, path::PathBuf};
 use walkdir::WalkDir;
 
 pub fn print_files_recursively(path: PathBuf) {
@@ -18,6 +18,23 @@ pub fn print_files_recursively(path: PathBuf) {
             }
         }
     }
+}
+
+pub fn list_dirs(path: PathBuf) -> io::Result<Vec<String>> {
+    let mut dirs = Vec::new();
+
+    // Read the entries in the specified path
+    for entry in fs::read_dir(path)? {
+        let entry = entry?; // Get the entry
+        if entry.file_type()?.is_dir() { // Check if it's a directory
+            // Get the directory name and convert it to a String
+            if let Some(dir_name) = entry.file_name().to_str() {
+                dirs.push(dir_name.to_string()); // Add the directory name to the list
+            }
+        }
+    }
+
+    Ok(dirs) // Return the list of directory names
 }
 
 pub fn collect_files_and_dirs(path: PathBuf) -> (Vec<PathBuf>, Vec<PathBuf>) {
