@@ -1,42 +1,82 @@
-struct App {
-    state: AppStatus,
-    template_path: String,
-}
+mod app;
 
-#[derive(Debug)]
-enum AppStatus {
-    Stop,
-    Active
-}
+use app::App;
 
-impl App {
-    const TEMPLATES_PATH_VAR_NAME: &str = "CREATOR_TEMPLATES";
-    const DEFAULT_TEMPLATE_PATH: &str = "/Templates";
+mod replacer {
 
-    fn new() -> App {
-        let mut app = App{state: AppStatus::Stop, template_path: String::from("")};
-        app.load_template_path();
-        return app;
+    use std::path::PathBuf;
+    use walkdir::WalkDir;
+
+    pub fn print_files_recursively(path: PathBuf) {
+        // Walk the directory recursively
+        for entry in WalkDir::new(path) {
+            match entry {
+                Ok(e) => {
+                    // Check if the entry is a file and print its path
+                    if e.file_type().is_file() {
+                        println!("File: {}", e.path().display());
+                    } else {
+                        println!("Dir:  {}", e.path().display());
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error reading entry: {}", e);
+                }
+            }
+        }
     }
-    
-    /// Updates the path using the environment variable App::TEMPLATES_PATH_VAR_NAME
-    fn load_template_path(&mut self) {
-        self.template_path = std::env::var(self::App::TEMPLATES_PATH_VAR_NAME)
-            .unwrap_or_else(|_| self::App::DEFAULT_TEMPLATE_PATH.to_string());
-    }
 
-    fn greet(&self) {
-        println!("State {:?}", self.state);
-        println!("Template Path {}", self.template_path);
-    }
-    
-    fn start(&mut self){
-        self.state = AppStatus::Active;
-        self.greet();
+    pub fn collect_files_and_dirs(path: PathBuf) -> (Vec<PathBuf>, Vec<PathBuf>) {
+        let mut files = Vec::new();
+        let mut dirs = Vec::new();
+
+        // Walk the directory recursively
+        for entry in WalkDir::new(path) {
+            match entry {
+                Ok(e) => {
+                    if e.file_type().is_file() {
+                        files.push(e.path().to_path_buf());
+                    } else if e.file_type().is_dir() {
+                        dirs.push(e.path().to_path_buf());
+                    }
+                }
+                Err(e) => {
+                    eprintln!("Error reading entry: {}", e);
+                }
+            }
+        }
+
+        (files, dirs)
     }
 }
 
 fn main() {
+    // std::env::set_var(App::, "VALUE");
+    let cwd = std::env::current_dir().expect("Failed to get current directory");
+
+    let mut path = cwd.clone();
+    path.push("tests");
+    path.push("assets");
+    path.push("test_input");
+
+    println!("Test Path: {:?}", path.display());
+
     let mut app = App::new();
     app.start();
+
+    println!("\n");
+    
+    let (files, dirs) = replacer::collect_files_and_dirs(path);
+    
+    for f in files{
+        println!("File: {}", f.display());
+    }
+    
+    for d in dirs{
+        println!("Dir:  {}", d.display());
+    }
+    
+    
+        
+    
 }
