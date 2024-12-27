@@ -1,5 +1,14 @@
-use std::{fs, io, path::PathBuf};
+use std::{env, fs, io, path::PathBuf};
 use walkdir::WalkDir;
+
+pub fn get_variables(template_dir: &str) -> Vec<String> {
+    vec![
+        String::from(template_dir),
+        String::from("Var1"),
+        String::from("Var2"),
+        String::from("Var3"),
+    ]
+}
 
 pub fn print_files_recursively(path: PathBuf) {
     // Walk the directory recursively
@@ -26,7 +35,8 @@ pub fn list_dirs(path: PathBuf) -> io::Result<Vec<String>> {
     // Read the entries in the specified path
     for entry in fs::read_dir(path)? {
         let entry = entry?; // Get the entry
-        if entry.file_type()?.is_dir() { // Check if it's a directory
+        if entry.file_type()?.is_dir() {
+            // Check if it's a directory
             // Get the directory name and convert it to a String
             if let Some(dir_name) = entry.file_name().to_str() {
                 dirs.push(dir_name.to_string()); // Add the directory name to the list
@@ -35,6 +45,24 @@ pub fn list_dirs(path: PathBuf) -> io::Result<Vec<String>> {
     }
 
     Ok(dirs) // Return the list of directory names
+}
+
+pub fn get_current_working_directory() -> String {
+    match env::current_dir() {
+        Ok(path) => {
+            match path.to_str(){
+                Some(s) => {
+                    return s.to_string();
+                }
+                None => {
+                    return String::from("");
+                }
+            }
+        }
+        Err(_) => {
+            return String::from("");
+        }
+    }
 }
 
 pub fn collect_files_and_dirs(path: PathBuf) -> (Vec<PathBuf>, Vec<PathBuf>) {
