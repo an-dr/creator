@@ -12,8 +12,8 @@ enum AppStatus {
 }
 
 impl App {
-    const TEMPLATES_PATH_VAR_NAME: &str = "CREATOR_TEMPLATES";
-    const DEFAULT_TEMPLATE_PATH: &str = "/Templates";
+    pub const TEMPLATES_PATH_VAR_NAME: &str = "CREATOR_TEMPLATES";
+    pub const DEFAULT_TEMPLATE_PATH: &str = "/Templates";
 
     pub fn new() -> App {
         let mut app = App{state: AppStatus::Stop, template_path: String::from("")};
