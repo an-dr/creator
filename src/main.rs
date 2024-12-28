@@ -1,6 +1,7 @@
 mod creator_operations;
 mod directory;
 mod tui;
+mod creator;
 
 use directory::Directory;
 

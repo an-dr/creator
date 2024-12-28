@@ -1,5 +1,6 @@
 use crate::creator_operations;
 use crate::directory::Directory;
+use crate::creator::Creator;
 use cursive::align::HAlign;
 use cursive::event::Key;
 use cursive::traits::*;
@@ -79,6 +80,7 @@ impl Tui {
         template_group_path: String,
     ) {
         let template_full_path = format!("{}/{}", template_group_path, template_name);
+        
         let variable_names = creator_operations::get_variables(&template_full_path);
 
         // Create a vertical layout to hold input fields
@@ -152,15 +154,6 @@ impl Tui {
             let s = d.file_name().unwrap().to_str().unwrap().to_string();
             str_paths.push(s);
         }
-        // match creator_operations::list_dirs(template_path) {
-        //     Ok(dirs) => {
-        //         directs = dirs;
-        //     }
-        //     Err(e) => {
-        //         Tui::show_error(&e.to_string());
-        //         directs = Vec::new();
-        //     }
-        // }
         select.add_all_str(str_paths);
         select
     }
