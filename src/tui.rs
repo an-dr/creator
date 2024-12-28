@@ -1,8 +1,7 @@
 use crate::creator_operations;
-use crate::App;
+use crate::directory::Directory;
 use cursive::align::HAlign;
 use cursive::event::Key;
-use cursive::reexports::ahash::HashMap;
 use cursive::traits::*;
 use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView, TextView};
 use cursive::Cursive;
@@ -11,7 +10,6 @@ use std::time::Duration;
 
 pub struct Tui {
     ui: cursive::CursiveRunnable,
-    app: App,
 }
 
 impl Tui {
@@ -19,10 +17,9 @@ impl Tui {
     const SELECT_ITEM_MSG: &str = "Select template";
 
     /// Tui constructor
-    pub fn new(_app: App) -> Tui {
+    pub fn new() -> Tui {
         let tui = Tui {
             ui: cursive::default(),
-            app: _app,
         };
         tui
     }
@@ -30,7 +27,7 @@ impl Tui {
     /// Run the tui application
     pub fn run(&mut self) {
         self.ui.add_global_callback('q', |s| s.quit());
-        self.show_select_group(self.app.get_template_storage_path());
+        self.show_select_group(creator_operations::get_storage_path());
         self.ui.run();
     }
 
@@ -76,10 +73,6 @@ impl Tui {
         cursive.add_layer(dialog);
     }
 
-    fn show_error(message: &str) {
-        eprintln!("Error: {}", message);
-    }
-
     fn cb_show_template_form(
         cursive: &mut Cursive,
         template_name: &str,
@@ -101,12 +94,12 @@ impl Tui {
         let dialog_title = format!("Enter Details \n Template: {}", template_full_path);
         let dialog = Dialog::around(layout.scrollable())
             .title(dialog_title)
-            .button("Cancel", move |s| {
-                s.pop_layer();
+            .button("Cancel", move |cursive| {
+                cursive.pop_layer();
             })
-            .button("Submit", move |s| {
+            .button("Submit", move |cursive| {
                 Tui::cb_copy_template(
-                    s,
+                    cursive,
                     &template_full_path,
                     &creator_operations::get_current_working_directory(),
                     variable_names.clone(),
@@ -151,18 +144,24 @@ impl Tui {
             .autojump();
 
         // List the dirs
-        let directs;
-        match creator_operations::list_dirs(template_path) {
-            Ok(dirs) => {
-                // println!("Directories:");
-                directs = dirs;
-            }
-            Err(e) => {
-                Tui::show_error(&e.to_string());
-                directs = Vec::new();
-            }
+        let templ_dir = Directory::new(template_path.to_str().unwrap());
+        let (_, directs) = templ_dir.get_items();
+        
+        let mut str_paths: Vec<String> = Vec::new();
+        for d in directs{
+            let s = d.file_name().unwrap().to_str().unwrap().to_string();
+            str_paths.push(s);
         }
-        select.add_all_str(directs);
+        // match creator_operations::list_dirs(template_path) {
+        //     Ok(dirs) => {
+        //         directs = dirs;
+        //     }
+        //     Err(e) => {
+        //         Tui::show_error(&e.to_string());
+        //         directs = Vec::new();
+        //     }
+        // }
+        select.add_all_str(str_paths);
         select
     }
 }

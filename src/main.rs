@@ -1,41 +1,45 @@
-mod app;
 mod creator_operations;
+mod directory;
 mod tui;
-use app::App;
+
+use directory::Directory;
 
 fn test_app() {
-    std::env::set_var(App::TEMPLATES_PATH_VAR_NAME, "VALUE");
-    let cwd = std::env::current_dir().expect("Failed to get current directory");
+    // let cwd = std::env::current_dir().expect("Failed to get current directory");
 
-    let mut path = cwd.clone();
-    path.push("tests");
-    path.push("assets");
-    path.push("test_input");
+    // let mut path = cwd.clone();
 
-    println!("Test Path: {:?}", path.display());
+    // // app.start();
 
-    let mut app = App::new();
-    // app.start();
+    // println!("\n");
 
-    println!("\n");
+    // let (files, dirs) = creator_operations::collect_files_and_dirs(path);
 
-    let (files, dirs) = creator_operations::collect_files_and_dirs(path);
+    // for f in files {
+    //     println!("File: {}", f.display());
+    // }
 
+    // for d in dirs {
+    //     println!("Dir:  {}", d.display());
+    // }
+    let mut dir = Directory::new(&creator_operations::get_storage_path());
+
+    let (files, dirs) = dir.get_items();
     for f in files {
-        println!("File: {}", f.display());
+        println!("File: {}", f.file_name().unwrap().to_str().unwrap());
     }
 
     for d in dirs {
-        println!("Dir:  {}", d.display());
+        println!("Dir:  {}", d.file_name().unwrap().to_str().unwrap());
     }
 }
 
-fn run(){
-    let mut app = app::App::new();
-    let mut tui = tui::Tui::new(app);
+fn run() {
+    let mut tui = tui::Tui::new();
     tui.run();
 }
 
 fn main() {
     run();
+    // test_app();
 }

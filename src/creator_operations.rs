@@ -1,6 +1,10 @@
 use std::{env, fs, io, path::PathBuf};
 use walkdir::WalkDir;
 
+
+pub const TEMPLATES_PATH_VAR_NAME: &str = "CREATOR_STORAGE";
+pub const DEFAULT_TEMPLATE_PATH: &str = "D:/dev-templates/templates";
+
 pub fn get_variables(template_dir: &str) -> Vec<String> {
     vec![
         String::from(template_dir),
@@ -48,21 +52,16 @@ pub fn list_dirs(path: PathBuf) -> io::Result<Vec<String>> {
 }
 
 pub fn get_current_working_directory() -> String {
-    match env::current_dir() {
-        Ok(path) => {
-            match path.to_str(){
-                Some(s) => {
-                    return s.to_string();
-                }
-                None => {
-                    return String::from("");
-                }
-            }
-        }
-        Err(_) => {
-            return String::from("");
-        }
-    }
+    env::current_dir()
+        .expect("CWD is not accessible!")
+        .to_str()
+        .expect("Cannot covert to String")
+        .to_string()
+}
+
+pub fn get_storage_path() -> String {
+    std::env::var(TEMPLATES_PATH_VAR_NAME)
+        .unwrap_or_else(|_| DEFAULT_TEMPLATE_PATH.to_string())
 }
 
 pub fn collect_files_and_dirs(path: PathBuf) -> (Vec<PathBuf>, Vec<PathBuf>) {
