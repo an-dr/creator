@@ -1,5 +1,8 @@
-use std::path::PathBuf;
+use regex::Regex;
+use std::{collections::HashSet, fs, path::PathBuf};
 use walkdir::WalkDir;
+
+const DEFAULT_SEARCH_PATTERN: &str = r"#var_(.*?)#";
 
 pub struct DirectoryAnalyzer {
     path: PathBuf,
@@ -60,13 +63,33 @@ impl DirectoryAnalyzer {
         (files, dirs)
     }
 
-    pub fn scan_variables(&self) -> Vec<String> {
-        vec![
-            self.path.to_str().unwrap_or_default().to_string(),
-            String::from("Var1"),
-            String::from("Var2"),
-            String::from("Var3"),
-        ]
+    fn search_and_append(text: &str, vars_to_append: &mut HashSet<String>) {
+        let re = Regex::new(DEFAULT_SEARCH_PATTERN)
+            .expect("Matching pattern must be accepted");
+        for mat in re.find_iter(text) {
+            vars_to_append.insert(mat.as_str().to_string());
+            println!("Found: {}", mat.as_str());
+        }
     }
 
+    pub fn scan_variables(&self) -> HashSet<String> {
+        let mut vars: HashSet<String> = HashSet::new();
+
+        let (files, dirs) = self.get_items_recursively();
+
+        for f in files {
+            // Scan file names
+            Self::search_and_append(f.file_name().unwrap().to_str().unwrap(), &mut vars);
+            // Scan file content
+            let content = fs::read_to_string(&f).unwrap();
+            Self::search_and_append(&content, &mut vars);
+        }
+
+        for d in dirs {
+            // Scan names
+            Self::search_and_append(d.file_name().unwrap().to_str().unwrap(), &mut vars);
+        }
+
+        vars
+    }
 }

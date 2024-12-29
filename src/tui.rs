@@ -6,8 +6,8 @@ use cursive::event::Key;
 use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView, TextView};
 use cursive::Cursive;
 use cursive::{traits::*, CursiveRunnable};
-use std::collections::HashMap;
-use std::path::PathBuf;
+use std::collections::{HashMap, HashSet};
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 const SELECT_GROUP_MSG: &str = "Select template group";
@@ -101,7 +101,7 @@ fn create_from_template(
     cursive: &mut Cursive,
     srs: &str,
     dest: &str,
-    var_names: &Vec<String>,
+    var_names: &HashSet<String>,
 ) {
     // Collect input values
     let mut input_values: HashMap<String, String> = HashMap::new();
@@ -111,9 +111,9 @@ fn create_from_template(
         .unwrap_or_default();
     input_values.insert(var.clone(), value.to_string());
 }
-    let mut creator = Creator::new(PathBuf::from(srs), PathBuf::from(dest));
+    let mut creator = Creator::new(Path::new(srs), Path::new(dest));
     creator.set_var_values(&input_values);
-    creator.copy();
+    creator.create();
     
     let mut results = String::new();
     let src = creator.get_source().to_str().unwrap();
@@ -126,6 +126,7 @@ fn create_from_template(
     }
     // Show results in a new dialog
     cursive.add_layer(Dialog::info(results));
+    exit_after(cursive, 3);
 }
 
 /// Return a SelectView constructed from the folder names in the provided path

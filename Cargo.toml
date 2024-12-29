@@ -1,8 +1,9 @@
 [package]
+edition = "2021"
 name = "creator"
 version = "0.1.0"
-edition = "2021"
 
 [dependencies]
-walkdir = "2.5"
 cursive = "0.21"
+regex = "1.9"
+walkdir = "2.5"

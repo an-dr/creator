@@ -2,7 +2,6 @@ mod creator;
 mod directory_analyzer;
 mod environment;
 mod tui;
-
 use directory_analyzer::DirectoryAnalyzer;
 
 fn test_app() {

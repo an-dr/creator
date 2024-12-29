@@ -1,7 +1,7 @@
 use std::env;
 
 pub const TEMPLATES_PATH_VAR_NAME: &str = "CREATOR_STORAGE";
-pub const DEFAULT_TEMPLATE_PATH: &str = "D:/dev-templates/templates";
+pub const DEFAULT_TEMPLATE_PATH: &str = "D:/creator/tests/test_storage";
 
 // pub fn get_variables(template_dir: &str) -> Vec<String> {
 //     vec![

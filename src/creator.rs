@@ -11,12 +11,17 @@ pub struct Creator {
 }
 
 impl Creator {
-    pub fn new(src: PathBuf, dest: PathBuf) -> Self {
-        Self {
-            source: src,
+    pub fn new(src: &Path, dest: &Path) -> Self {
+        let mut s = Self {
+            source: PathBuf::from(src),
             source_variable_values: HashMap::new(),
-            destination: dest,
-        }
+            destination: PathBuf::new(),
+        };
+
+        let src_dir_name = src.file_name().expect("Cannot read source file name");
+        s.destination = PathBuf::from(dest).join(src_dir_name);
+
+        s
     }
 
     pub fn get_source(&self) -> &Path {
@@ -27,7 +32,7 @@ impl Creator {
         &self.destination
     }
 
-    pub fn copy(&self) -> io::Result<()> {
+    pub fn create(&self) -> io::Result<()> {
         // Ensure the destination directory exists
         if !self.destination.exists() {
             fs::create_dir_all(self.destination.clone())?;
