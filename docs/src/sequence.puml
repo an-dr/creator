@@ -1,0 +1,42 @@
+@startuml Sequence
+
+participant "User" as user
+participant "User Interface" as ui
+participant "Creator" as creator
+participant "OS" as os
+
+user -> ui: run()
+activate ui
+
+ui -> os: get_storage_path_env()
+activate os
+return storage_path
+return Dialog: Select Group
+
+user -> ui: Group
+activate ui
+return Dialog: Select Template
+
+user -> ui: Template
+activate ui
+ui -> creator: get_variables(template_path)
+activate creator
+return variables: List<String>
+return Dialog: Enter Variables
+
+user -> ui: variables
+activate ui
+ui -> creator: create_from_template(templ_src, templ_dest, variables)
+activate creator
+creator -> os: copy(templ_src, templ_dest)
+activate os
+return success
+
+creator -> os: replace_variables(templ_dest, variables)
+activate os
+return success
+
+return success
+return Dialog: Success
+
+@enduml

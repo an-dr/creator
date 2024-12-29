@@ -1,9 +1,9 @@
-mod creator_operations;
-mod directory;
-mod tui;
 mod creator;
+mod directory_analyzer;
+mod environment;
+mod tui;
 
-use directory::Directory;
+use directory_analyzer::DirectoryAnalyzer;
 
 fn test_app() {
     // let cwd = std::env::current_dir().expect("Failed to get current directory");
@@ -23,7 +23,7 @@ fn test_app() {
     // for d in dirs {
     //     println!("Dir:  {}", d.display());
     // }
-    let mut dir = Directory::new(&creator_operations::get_storage_path());
+    let mut dir = DirectoryAnalyzer::new(&environment::get_storage_path());
 
     let (files, dirs) = dir.get_items();
     for f in files {
@@ -36,8 +36,7 @@ fn test_app() {
 }
 
 fn run() {
-    let mut tui = tui::Tui::new();
-    tui.run();
+    tui::run();
 }
 
 fn main() {

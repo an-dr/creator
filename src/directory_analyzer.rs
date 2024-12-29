@@ -1,22 +1,22 @@
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
-pub struct Directory {
+pub struct DirectoryAnalyzer {
     path: PathBuf,
 }
 
-impl Directory {
-    pub fn new(path: &str) -> Directory {
-        Directory {
+impl DirectoryAnalyzer {
+    pub fn new(path: &str) -> DirectoryAnalyzer {
+        DirectoryAnalyzer {
             path: PathBuf::from(path),
         }
     }
 
-    pub fn get_nested_directory(&self, name: &str) -> Option<Directory> {
+    pub fn get_nested_directory(&self, name: &str) -> Option<DirectoryAnalyzer> {
         let mut path = self.path.clone();
         path.push(name);
         if path.is_dir() {
-            Some(Directory::new(path.to_str().unwrap()))
+            Some(DirectoryAnalyzer::new(path.to_str().unwrap()))
         } else {
             None
         }
@@ -59,4 +59,14 @@ impl Directory {
 
         (files, dirs)
     }
+
+    pub fn scan_variables(&self) -> Vec<String> {
+        vec![
+            self.path.to_str().unwrap_or_default().to_string(),
+            String::from("Var1"),
+            String::from("Var2"),
+            String::from("Var3"),
+        ]
+    }
+
 }
