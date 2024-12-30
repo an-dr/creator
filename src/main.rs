@@ -4,7 +4,7 @@ mod directory_analyzer;
 mod environment;
 mod tui;
 use directory_analyzer::DirectoryAnalyzer;
-use log::{error, info};
+use log::{info};
 use simplelog::*;
 use std::fs::File;
 
@@ -43,14 +43,14 @@ fn run() {
 }
 
 fn main() {
-    // Set up logging to a file
-    let log_file = File::create("creator.log").expect("Failed to create log file");
-    CombinedLogger::init(vec![WriteLogger::new(
-        LevelFilter::Info,
-        Config::default(),
-        log_file,
-    )])
-    .expect("Failed to initialize logger");
+    // // Set up logging to a file
+    // let log_file = File::create("creator.log").expect("Failed to create log file");
+    // CombinedLogger::init(vec![WriteLogger::new(
+    //     LevelFilter::Info,
+    //     Config::default(),
+    //     log_file,
+    // )])
+    // .expect("Failed to initialize logger");
 
     run();
     // test_app();

@@ -1,35 +1,7 @@
+use directories::UserDirs;
 use std::env;
 
-pub const TEMPLATES_PATH_VAR_NAME: &str = "CREATOR_STORAGE";
-pub const DEFAULT_TEMPLATE_PATH: &str = "D:/creator/tests/test_storage";
-
-// pub fn get_variables(template_dir: &str) -> Vec<String> {
-//     vec![
-//         String::from(template_dir),
-//         String::from("Var1"),
-//         String::from("Var2"),
-//         String::from("Var3"),
-//     ]
-// }
-
-// pub fn print_files_recursively(path: PathBuf) {
-//     // Walk the directory recursively
-//     for entry in WalkDir::new(path) {
-//         match entry {
-//             Ok(e) => {
-//                 // Check if the entry is a file and print its path
-//                 if e.file_type().is_file() {
-//                     println!("File: {}", e.path().display());
-//                 } else {
-//                     println!("Dir:  {}", e.path().display());
-//                 }
-//             }
-//             Err(e) => {
-//                 eprintln!("Error reading entry: {}", e);
-//             }
-//         }
-//     }
-// }
+use crate::app_config::{CREATOR_ENV_VAR, DEFAULT_CREATOR_ENV_VAR_VALUE};
 
 pub fn get_current_working_directory() -> String {
     env::current_dir()
@@ -40,6 +12,15 @@ pub fn get_current_working_directory() -> String {
 }
 
 pub fn get_storage_path() -> String {
-    std::env::var(TEMPLATES_PATH_VAR_NAME)
-        .unwrap_or_else(|_| DEFAULT_TEMPLATE_PATH.to_string())
+    let storage = std::env::var(CREATOR_ENV_VAR)
+        .unwrap_or_else(|_| DEFAULT_CREATOR_ENV_VAR_VALUE.to_string());
+
+    // Unfold ~ to the user's home directory
+    if storage.starts_with("~") {
+        if let Some(user_dirs) = UserDirs::new() {
+            let home_dir = user_dirs.home_dir().to_str().unwrap();
+            return storage.replacen("~", home_dir, 1);
+        }
+    }
+    storage
 }

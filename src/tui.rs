@@ -1,13 +1,14 @@
-use crate::creator::{self, Creator};
+use crate::creator::Creator;
 use crate::directory_analyzer::DirectoryAnalyzer;
 use crate::environment;
 use cursive::align::HAlign;
 use cursive::event::Key;
+use cursive::theme::{BaseColor, Color, ColorStyle, ColorType, Theme};
 use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView, TextView};
 use cursive::Cursive;
 use cursive::{traits::*, CursiveRunnable};
 use std::collections::{HashMap, HashSet};
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::time::Duration;
 
 const SELECT_GROUP_MSG: &str = "Select template group";
@@ -18,7 +19,12 @@ pub fn run() {
     let mut tui = cursive::CursiveRunnable::default();
     tui.add_global_callback('q', |s| s.quit());
     show_main_screen(&mut tui);
+    set_theme(&mut tui);
     tui.run();
+}
+
+fn set_theme(siv: &mut CursiveRunnable) {
+    siv.load_toml(include_str!("tui_theme.toml")).unwrap();
 }
 
 /// Shows Template type selection dialog
@@ -53,7 +59,7 @@ fn show_template_select(cursive: &mut Cursive, group_full_path: String) {
             cursive_inst.pop_layer();
         })
         .scrollable()
-        .fixed_size((20, 10));
+        .fixed_size((30, 10));
     let dialog = Dialog::around(sel_events).title(SELECT_ITEM_MSG);
     cursive.add_layer(dialog);
 }
@@ -111,11 +117,14 @@ fn create_from_template(
         let value = cursive
             .call_on_name(&var, |view: &mut EditView| view.get_content())
             .unwrap_or_default();
-        input_values.insert(var.clone(), value.to_string());
+        // if not empty ot not whitespaces
+        if !value.trim().is_empty() {
+            input_values.insert(var.clone(), value.to_string());
+        }
     }
     let mut creator = Creator::new(Path::new(srs), Path::new(dest));
     creator.set_var_values(&input_values);
-    creator.create();
+    creator.create().expect("Failed to create from template");
 
     let mut results = String::new();
     let src = creator.get_source().to_str().unwrap();
