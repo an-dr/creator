@@ -1,17 +1,17 @@
 use regex::Regex;
-use std::{collections::HashSet, fs, path::PathBuf};
+use std::{collections::HashSet, fs, path::{Path, PathBuf}};
 use walkdir::WalkDir;
 
-const DEFAULT_SEARCH_PATTERN: &str = r"#var_(.*?)#";
+use crate::app_config;
 
 pub struct DirectoryAnalyzer {
     path: PathBuf,
 }
 
 impl DirectoryAnalyzer {
-    pub fn new(path: &str) -> DirectoryAnalyzer {
+    pub fn new<P: AsRef<Path>>(path: P) -> DirectoryAnalyzer {
         DirectoryAnalyzer {
-            path: PathBuf::from(path),
+            path: PathBuf::from(path.as_ref()),
         }
     }
 
@@ -64,11 +64,18 @@ impl DirectoryAnalyzer {
     }
 
     fn search_and_append(text: &str, vars_to_append: &mut HashSet<String>) {
-        let re = Regex::new(DEFAULT_SEARCH_PATTERN)
+        let pattern = format!(
+            "{}(.*?){}",
+            app_config::TEMPLATE_VAR_PREFIX,
+            app_config::TEMPLATE_VAR_SUFFIX
+        );
+        let re = Regex::new(&pattern)
             .expect("Matching pattern must be accepted");
-        for mat in re.find_iter(text) {
-            vars_to_append.insert(mat.as_str().to_string());
-            println!("Found: {}", mat.as_str());
+        for caps in re.captures_iter(text) {
+            if let Some(var_name) = caps.get(1) {
+                vars_to_append.insert(var_name.as_str().to_string());
+                // println!("Found: {}", var_name.as_str());
+            }
         }
     }
 

@@ -66,7 +66,9 @@ fn show_variable_input_form(cursive: &mut Cursive, template_full_path: String) {
 
     // Create a vertical layout to hold input fields
     let mut layout = LinearLayout::vertical();
-    for var in &variable_names {
+    let mut sorted_vars: Vec<_> = variable_names.clone().into_iter().collect();
+    sorted_vars.sort();
+    for var in &sorted_vars {
         // Add a TextView and an EditView for each variable
         layout.add_child(TextView::new(format!("{}:", var)));
         layout.add_child(EditView::new().with_name(var.clone()));
@@ -103,18 +105,18 @@ fn create_from_template(
     dest: &str,
     var_names: &HashSet<String>,
 ) {
-    // Collect input values
+    // Collect input values print
     let mut input_values: HashMap<String, String> = HashMap::new();
     for var in var_names {
         let value = cursive
-        .call_on_name(&var, |view: &mut EditView| view.get_content())
-        .unwrap_or_default();
-    input_values.insert(var.clone(), value.to_string());
-}
+            .call_on_name(&var, |view: &mut EditView| view.get_content())
+            .unwrap_or_default();
+        input_values.insert(var.clone(), value.to_string());
+    }
     let mut creator = Creator::new(Path::new(srs), Path::new(dest));
     creator.set_var_values(&input_values);
     creator.create();
-    
+
     let mut results = String::new();
     let src = creator.get_source().to_str().unwrap();
     let dsc = creator.get_destination().to_str().unwrap();
@@ -126,7 +128,7 @@ fn create_from_template(
     }
     // Show results in a new dialog
     cursive.add_layer(Dialog::info(results));
-    exit_after(cursive, 3);
+    // exit_after(cursive, 3);
 }
 
 /// Return a SelectView constructed from the folder names in the provided path

@@ -5,5 +5,7 @@ version = "0.1.0"
 
 [dependencies]
 cursive = "0.21"
+log = "0.4"
 regex = "1.9"
+simplelog = "0.12.2"
 walkdir = "2.5"
