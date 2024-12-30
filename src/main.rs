@@ -44,7 +44,7 @@ fn run() {
 
 fn main() {
     // // Set up logging to a file
-    // let log_file = File::create("creator.log").expect("Failed to create log file");
+    // let log_file = File::create("creator.log").expect("Failed to creqate log file");
     // CombinedLogger::init(vec![WriteLogger::new(
     //     LevelFilter::Info,
     //     Config::default(),

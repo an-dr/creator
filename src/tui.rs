@@ -11,8 +11,8 @@ use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::time::Duration;
 
-const SELECT_GROUP_MSG: &str = "Select template group";
-const SELECT_ITEM_MSG: &str = "Select template";
+const SELECT_GROUP_MSG: &str = "SELECT TEMPLATE GROUP";
+const SELECT_ITEM_MSG: &str = "SELECT TEMPLATE";
 
 /// Run the tui application
 pub fn run() {
@@ -81,7 +81,7 @@ fn show_variable_input_form(cursive: &mut Cursive, template_full_path: String) {
     }
 
     // Wrap the layout in a Dialog with a submit button
-    let dialog_title = format!("Enter Details \n Template: {}", template_full_path);
+    let dialog_title = "ENTER THE VARIABLE VALUES";
     let dialog = Dialog::around(layout.scrollable())
         .title(dialog_title)
         // Close the dialog on cancel

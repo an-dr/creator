@@ -1,25 +1,26 @@
 shadow = false  # Don't draw shadows around stacked views
 borders = "simple"  # Alternatives are "none" and "outset"
 
-# Here we define the color palette.
 [colors]
-    background = "black"
+    background = "#000000"
+    
     # If the value is an array, the first valid color will be used.
     # If the terminal doesn't support custom color,
     # non-base colors will be skipped.
-    shadow     = ["#000000", "black"]
-    view       = "#d3d7cf"
+    shadow     = ["#1b1b1b"]
+    view       = "#f6f6f6"
+    # view       = "#4e4e4e"
 
     # Array and simple values have the same effect.
-    primary   = ["#111111"]
-    secondary = "#EEEEEE"
+    primary   = "#4e4e4e"
+    secondary = "#1f9189"
     tertiary  = "#444444"
 
     # Hex values can use lower or uppercase.
     # (base color MUST be lowercase)
-    title_primary   = "#ff5555"
-    title_secondary = "#ffff55"
+    title_primary   = "#1f9189"
+    title_secondary = "#2a4543"
 
     # Lower precision values can use only 3 digits.
-    highlight          = "#F00"
-    highlight_inactive = "#5555FF"
+    highlight          = "#e4004f"
+    highlight_inactive = "#ed6f9b"
