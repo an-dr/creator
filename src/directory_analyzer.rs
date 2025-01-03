@@ -1,5 +1,21 @@
+// *************************************************************************
+//
+// Copyright (c) 2025 Andrei Gramakov. All rights reserved.
+//
+// This file is licensed under the terms of the MIT license.
+// For a copy, see: https://opensource.org/licenses/MIT
+//
+// site:    https://agramakov.me
+// e-mail:  mail@agramakov.me
+//
+// *************************************************************************
+
 use regex::Regex;
-use std::{collections::HashSet, fs, path::{Path, PathBuf}};
+use std::{
+    collections::HashSet,
+    fs,
+    path::{Path, PathBuf},
+};
 use walkdir::WalkDir;
 
 use crate::app_config;
@@ -69,8 +85,7 @@ impl DirectoryAnalyzer {
             app_config::TEMPLATE_VAR_PREFIX,
             app_config::TEMPLATE_VAR_SUFFIX
         );
-        let re = Regex::new(&pattern)
-            .expect("Matching pattern must be accepted");
+        let re = Regex::new(&pattern).expect("Matching pattern must be accepted");
         for caps in re.captures_iter(text) {
             if let Some(var_name) = caps.get(1) {
                 vars_to_append.insert(var_name.as_str().to_string());

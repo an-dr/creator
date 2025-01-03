@@ -1,18 +1,34 @@
+// *************************************************************************
+//
+// Copyright (c) 2025 Andrei Gramakov. All rights reserved.
+//
+// This file is licensed under the terms of the MIT license.
+// For a copy, see: https://opensource.org/licenses/MIT
+//
+// site:    https://agramakov.me
+// e-mail:  mail@agramakov.me
+//
+// *************************************************************************
+
 use crate::creator::Creator;
 use crate::directory_analyzer::DirectoryAnalyzer;
 use crate::environment;
 use cursive::align::HAlign;
 use cursive::event::Key;
-use cursive::theme::{BaseColor, Color, ColorStyle, ColorType, Theme};
 use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView, TextView};
 use cursive::Cursive;
 use cursive::{traits::*, CursiveRunnable};
 use std::collections::{HashMap, HashSet};
+use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
 use std::path::Path;
 use std::time::Duration;
 
 const SELECT_GROUP_MSG: &str = "SELECT TEMPLATE GROUP";
 const SELECT_ITEM_MSG: &str = "SELECT TEMPLATE";
+const DIALOG_TITLE: &str = "ENTER THE VARIABLE VALUES";
+
+const SIZE_MAIN: (u16, u16) = (40, 20);
+const SIZE_SELECT: (u16, u16) = (30, 10);
 
 /// Run the tui application
 pub fn run() {
@@ -27,6 +43,7 @@ fn set_theme(siv: &mut CursiveRunnable) {
     siv.load_toml(include_str!("tui_theme.toml")).unwrap();
 }
 
+
 /// Shows Template type selection dialog
 fn show_main_screen(cursive: &mut CursiveRunnable) {
     let template_storage_path = environment::get_storage_path();
@@ -39,9 +56,11 @@ fn show_main_screen(cursive: &mut CursiveRunnable) {
 
     let sel_events = OnEventView::new(select)
         .on_event(Key::Esc, |cursive| cursive.quit())
-        .scrollable()
-        .fixed_size((20, 10));
-    cursive.add_layer(Dialog::around(sel_events).title(SELECT_GROUP_MSG));
+        .scrollable().full_screen();
+    let dialog = Dialog::around(sel_events).title(SELECT_GROUP_MSG);
+    
+    
+    cursive.add_layer(dialog);
 }
 
 /// Shows template selection dialog
@@ -59,8 +78,11 @@ fn show_template_select(cursive: &mut Cursive, group_full_path: String) {
             cursive_inst.pop_layer();
         })
         .scrollable()
-        .fixed_size((30, 10));
+        .fixed_size(SIZE_SELECT);
     let dialog = Dialog::around(sel_events).title(SELECT_ITEM_MSG);
+    // Chnage background color
+    
+    
     cursive.add_layer(dialog);
 }
 
@@ -81,9 +103,8 @@ fn show_variable_input_form(cursive: &mut Cursive, template_full_path: String) {
     }
 
     // Wrap the layout in a Dialog with a submit button
-    let dialog_title = "ENTER THE VARIABLE VALUES";
     let dialog = Dialog::around(layout.scrollable())
-        .title(dialog_title)
+        .title(DIALOG_TITLE)
         // Close the dialog on cancel
         .button("Back", move |cursive| {
             cursive.pop_layer();
