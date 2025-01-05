@@ -19,7 +19,6 @@ use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView, Te
 use cursive::Cursive;
 use cursive::{traits::*, CursiveRunnable};
 use std::collections::{HashMap, HashSet};
-use cursive::theme::{BaseColor::*, Color::*, PaletteColor::*};
 use std::path::Path;
 use std::time::Duration;
 
@@ -27,7 +26,6 @@ const SELECT_GROUP_MSG: &str = "SELECT TEMPLATE GROUP";
 const SELECT_ITEM_MSG: &str = "SELECT TEMPLATE";
 const DIALOG_TITLE: &str = "ENTER THE VARIABLE VALUES";
 
-const SIZE_MAIN: (u16, u16) = (40, 20);
 const SIZE_SELECT: (u16, u16) = (30, 10);
 
 /// Run the tui application
@@ -136,7 +134,7 @@ fn create_from_template(
     let mut input_values: HashMap<String, String> = HashMap::new();
     for var in var_names {
         let value = cursive
-            .call_on_name(&var, |view: &mut EditView| view.get_content())
+            .call_on_name(var, |view: &mut EditView| view.get_content())
             .unwrap_or_default();
         // if not empty ot not whitespaces
         if !value.trim().is_empty() {
@@ -182,7 +180,8 @@ fn build_select_view(dir: &str) -> SelectView {
     select
 }
 
-fn exit_after(siv: &mut Cursive, sec: u64) {
+/// The function for the future use that will exit the application after a certain time
+fn _exit_after(siv: &mut Cursive, sec: u64) {
     let duration = Duration::from_secs(sec);
     let quit_callback = siv.cb_sink().clone();
 

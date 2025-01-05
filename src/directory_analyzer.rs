@@ -9,6 +9,7 @@
 // e-mail:  mail@agramakov.me
 //
 // *************************************************************************
+#![allow(dead_code)] // This module will be reused
 
 use regex::Regex;
 use std::{
