@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*.*.*'
   pull_request:
 
 jobs:
@@ -37,4 +39,38 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}-release-build
-          path: target/${{ matrix.target }}/release/creator*
+          path: |
+            target/${{ matrix.target }}/release/creator
+            target/${{ matrix.target }}/release/creator.exe
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        uses: actions/upload-release-asset@v1
+        with:
+          name: "${{ github.ref_name }}-artifacts.zip"
+          asset_path: |
+            target/${{ matrix.target }}/release/creator
+            target/${{ matrix.target }}/release/creator.exe
+          asset_content_type: application/zip
