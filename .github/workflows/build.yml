@@ -19,11 +19,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🔧 Set up Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
           toolchain: stable
-          override: true
 
       - name: ⚙️ Install cross-compilation tools (Windows only)
         if: matrix.target == 'x86_64-pc-windows-gnu'
