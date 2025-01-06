@@ -9,10 +9,9 @@
 // e-mail:  mail@agramakov.me
 //
 // *************************************************************************
+use crate::app_config::{CREATOR_ENV_VAR, DEFAULT_CREATOR_ENV_VAR_VALUE};
 use directories::UserDirs;
 use std::env;
-
-use crate::app_config::{CREATOR_ENV_VAR, DEFAULT_CREATOR_ENV_VAR_VALUE};
 
 pub fn get_current_working_directory() -> String {
     env::current_dir()

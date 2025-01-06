@@ -41,7 +41,6 @@ fn set_theme(siv: &mut CursiveRunnable) {
     siv.load_toml(include_str!("tui_theme.toml")).unwrap();
 }
 
-
 /// Shows Template type selection dialog
 fn show_main_screen(cursive: &mut CursiveRunnable) {
     let template_storage_path = environment::get_storage_path();
@@ -54,10 +53,10 @@ fn show_main_screen(cursive: &mut CursiveRunnable) {
 
     let sel_events = OnEventView::new(select)
         .on_event(Key::Esc, |cursive| cursive.quit())
-        .scrollable().full_screen();
+        .scrollable()
+        .full_screen();
     let dialog = Dialog::around(sel_events).title(SELECT_GROUP_MSG);
-    
-    
+
     cursive.add_layer(dialog);
 }
 
@@ -79,8 +78,7 @@ fn show_template_select(cursive: &mut Cursive, group_full_path: String) {
         .fixed_size(SIZE_SELECT);
     let dialog = Dialog::around(sel_events).title(SELECT_ITEM_MSG);
     // Chnage background color
-    
-    
+
     cursive.add_layer(dialog);
 }
 

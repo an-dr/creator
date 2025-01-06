@@ -11,6 +11,7 @@
 // *************************************************************************
 #![allow(dead_code)] // This module will be reused
 
+use crate::app_config;
 use regex::Regex;
 use std::{
     collections::HashSet,
@@ -19,13 +20,13 @@ use std::{
 };
 use walkdir::WalkDir;
 
-use crate::app_config;
-
 pub struct DirectoryAnalyzer {
     path: PathBuf,
 }
 
 impl DirectoryAnalyzer {
+    /// Create a new instance of the DirectoryAnalyzer
+    /// Accepts a path to the directory to analyze as an argument
     pub fn new<P: AsRef<Path>>(path: P) -> DirectoryAnalyzer {
         DirectoryAnalyzer {
             path: PathBuf::from(path.as_ref()),
@@ -90,7 +91,6 @@ impl DirectoryAnalyzer {
         for caps in re.captures_iter(text) {
             if let Some(var_name) = caps.get(1) {
                 vars_to_append.insert(var_name.as_str().to_string());
-                // println!("Found: {}", var_name.as_str());
             }
         }
     }
