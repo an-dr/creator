@@ -22,14 +22,35 @@ pub fn get_current_working_directory() -> String {
 }
 
 pub fn get_storage_path() -> String {
-    let storage = std::env::var(CREATOR_ENV_VAR)
-        .unwrap_or_else(|_| DEFAULT_CREATOR_ENV_VAR_VALUE.to_string());
+    // try to get the storage path from the environment variable
+    let creator_env_var = env::var(CREATOR_ENV_VAR);
+
+    // If the environment variable is set, use if not use the default value, create a dir if not created and use
+    let storage;
+    if creator_env_var.is_ok() {
+        storage = creator_env_var.unwrap();
+        return storage;
+    } else {
+        storage = DEFAULT_CREATOR_ENV_VAR_VALUE.to_string();
+        // create the directory if it does not exist
+        if !std::path::Path::new(&storage).exists() {
+            std::fs::create_dir_all(&storage).expect("Cannot create storage directory");
+        }
+    }
 
     // Unfold ~ to the user's home directory
     if storage.starts_with("~") {
         if let Some(user_dirs) = UserDirs::new() {
             let home_dir = user_dirs.home_dir().to_str().unwrap();
-            return storage.replacen("~", home_dir, 1);
+            let unfolded = storage.replacen("~", home_dir, 1);
+
+            // create the directory if it does not exist
+            if !std::path::Path::new(&unfolded).exists() {
+                std::fs::create_dir_all(&unfolded)
+                    .expect("Cannot create storage directory");
+                println!("Created storage directory: {}", unfolded);
+            }
+            return unfolded;
         }
     }
     storage

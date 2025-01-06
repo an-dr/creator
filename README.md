@@ -22,7 +22,6 @@ For the application design and architecture see [docs/design.md](docs/design.md)
         - [Storage Layout](#storage-layout)
         - [Template Variables](#template-variables)
     - [💡 Notes](#-notes)
- 
 
 ## 🚀 Installation
 
@@ -64,6 +63,8 @@ Storage/
     ...
     
 ```
+
+Note: dotfiles and directories are ignored by the application.
 
 ### Template Variables
 

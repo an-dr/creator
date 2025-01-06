@@ -165,9 +165,21 @@ fn build_select_view(dir: &str) -> SelectView {
         // Use keyboard to jump to the pressed letters
         .autojump();
 
+    // If the dir does not exist write a message
+    if !Path::new(dir).exists() {
+        select.add_item(format!("Directory {} does not exist", dir), String::new());
+        return select;
+    }
+        
     // List the dirs
     let templ_dir = DirectoryAnalyzer::new(dir);
     let (_, directs) = templ_dir.get_items();
+    
+    // If no dirs found write a message
+    if directs.is_empty() {
+        select.add_item(format!("Directory {} is empty", dir), String::new());
+        return select;
+    }
 
     let mut str_paths: Vec<String> = Vec::new();
     for d in directs {

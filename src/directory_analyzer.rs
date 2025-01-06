@@ -46,9 +46,20 @@ impl DirectoryAnalyzer {
     pub fn get_items(&self) -> (Vec<PathBuf>, Vec<PathBuf>) {
         let mut files = Vec::new();
         let mut dirs = Vec::new();
+        
+        // if path does not exists return empty vectors
+        if !self.path.exists() {
+            return (files, dirs);
+        }
 
         for entry in std::fs::read_dir(&self.path).unwrap() {
             let entry = entry.unwrap();
+            
+            // If name is not dotfile
+            if entry.file_name().to_str().unwrap().starts_with('.') {
+                continue;
+            }
+            
             if entry.file_type().unwrap().is_file() {
                 files.push(entry.path());
             } else if entry.file_type().unwrap().is_dir() {
@@ -66,6 +77,11 @@ impl DirectoryAnalyzer {
         for entry in WalkDir::new(&self.path) {
             match entry {
                 Ok(e) => {
+                    // If name is not dotfile
+                    if e.file_name().to_str().unwrap().starts_with('.') {
+                        continue;
+                    }
+                    
                     if e.file_type().is_file() {
                         files.push(e.path().to_path_buf());
                     } else if e.file_type().is_dir() {
