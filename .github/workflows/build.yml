@@ -34,7 +34,7 @@ jobs:
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: 📤 Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target }}-release-build
-          path: target/${{ matrix.target }}/release/
+          path: target/${{ matrix.target }}/release/creator*
