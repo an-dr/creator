@@ -1,0 +1,42 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    name: Build and Store Artifacts
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64-unknown-linux-gnu, x86_64-pc-windows-gnu]
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: ⚙️ Install cross-compilation tools (Windows only)
+        if: matrix.target == 'x86_64-pc-windows-gnu'
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+
+      - name: ⚙️ Install target
+        run: rustup target add ${{ matrix.target }}
+
+      - name: 🔨 Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.target }}-release-build
+          path: target/${{ matrix.target }}/release/
