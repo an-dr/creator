@@ -13,11 +13,16 @@
 use crate::creator::Creator;
 use crate::directory_analyzer::DirectoryAnalyzer;
 use crate::environment;
-use cursive::align::HAlign;
+use cursive::align::{Align, HAlign};
 use cursive::event::Key;
+use cursive::theme::BaseColor;
+use cursive::utils::markup::StyledString;
+use cursive::view::IntoBoxedView;
 use cursive::views::{Dialog, EditView, LinearLayout, OnEventView, SelectView, TextView};
 use cursive::Cursive;
 use cursive::{traits::*, CursiveRunnable};
+use std::io;
+use std::alloc::Layout;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::time::Duration;
@@ -44,28 +49,23 @@ fn set_theme(siv: &mut CursiveRunnable) {
 /// Shows Template type selection dialog
 fn show_main_screen(cursive: &mut CursiveRunnable) {
     let template_storage_path = environment::get_storage_path();
-    let mut select = build_select_view(&template_storage_path);
+    let mut select = build_select_view(&template_storage_path).unwrap();
 
     select.set_on_submit(move |cursive_inst: &mut Cursive, selected: &str| {
-        let group_path = format!("{}/{}", template_storage_path, selected);
+        let group_path = format!("{template_storage_path}/{selected}");
         show_template_select(cursive_inst, group_path);
     });
 
-    let sel_events = OnEventView::new(select)
-        .on_event(Key::Esc, |cursive| cursive.quit())
-        .scrollable()
-        .full_screen();
-    let dialog = Dialog::around(sel_events).title(SELECT_GROUP_MSG);
-
+    let dialog = build_main_dialog(SELECT_GROUP_MSG, select.scrollable().full_screen());
     cursive.add_layer(dialog);
 }
 
 /// Shows template selection dialog
 fn show_template_select(cursive: &mut Cursive, group_full_path: String) {
     // Create select
-    let mut select = build_select_view(&group_full_path);
+    let mut select = build_select_view(&group_full_path).unwrap();
     select.set_on_submit(move |cursive_inst, selected_template: &str| {
-        let template_full_path = format!("{}/{}", group_full_path, selected_template);
+        let template_full_path = format!("{group_full_path}/{selected_template}");
         show_variable_input_form(cursive_inst, template_full_path);
     });
 
@@ -76,9 +76,8 @@ fn show_template_select(cursive: &mut Cursive, group_full_path: String) {
         })
         .scrollable()
         .fixed_size(SIZE_SELECT);
-    let dialog = Dialog::around(sel_events).title(SELECT_ITEM_MSG);
-    // Chnage background color
 
+    let dialog = build_dialog(SELECT_ITEM_MSG, sel_events);
     cursive.add_layer(dialog);
 }
 
@@ -94,32 +93,20 @@ fn show_variable_input_form(cursive: &mut Cursive, template_full_path: String) {
     sorted_vars.sort();
     for var in &sorted_vars {
         // Add a TextView and an EditView for each variable
-        layout.add_child(TextView::new(format!("{}:", var)));
+        layout.add_child(TextView::new(format!("{var}:")));
         layout.add_child(EditView::new().with_name(var.clone()));
     }
 
-    // Wrap the layout in a Dialog with a submit button
-    let dialog = Dialog::around(layout.scrollable())
-        .title(DIALOG_TITLE)
-        // Close the dialog on cancel
-        .button("Back", move |cursive| {
-            cursive.pop_layer();
-        })
-        // Copy the template on Create
-        .button("Create", move |cursive| {
-            create_from_template(
-                cursive,
-                &template_full_path,
-                &destination,
-                &variable_names,
-            );
-        });
-
-    let dialog_ev = OnEventView::new(dialog).on_event(Key::Esc, move |cursive| {
+    // Get a dialog and add buttons to it
+    let mut dialog_w_events = build_dialog(DIALOG_TITLE, layout.scrollable());
+    let dialog = dialog_w_events.get_inner_mut();
+    dialog.add_button("Back", move |cursive| {
         cursive.pop_layer();
     });
-
-    cursive.add_layer(dialog_ev);
+    dialog.add_button("Create", move |cursive| {
+        create_from_template(cursive, &template_full_path, &destination, &variable_names);
+    });
+    cursive.add_layer(dialog_w_events);
 }
 
 fn create_from_template(
@@ -146,20 +133,59 @@ fn create_from_template(
     let mut results = String::new();
     let src = creator.get_source().to_str().unwrap();
     let dsc = creator.get_destination().to_str().unwrap();
-    results.push_str(&format!("Source: {}\n", src));
-    results.push_str(&format!("Destination: {}\n", dsc));
+    results.push_str(&format!("Source: {src}\n"));
+    results.push_str(&format!("Destination: {dsc}\n"));
 
     for (k, v) in creator.get_var_values() {
-        results.push_str(&format!("{}: {}\n", k, v));
+        results.push_str(&format!("{k}: {v}\n"));
     }
     // Show results in a new dialog
     cursive.add_layer(Dialog::info(results));
     // exit_after(cursive, 3);
 }
 
+fn build_main_dialog(title: &str, view: impl View) -> OnEventView<Dialog> {
+    let mut layout = LinearLayout::vertical();
+    layout.add_child(view);
+
+    // Add message
+    let mut sstr = StyledString::new();
+    sstr.append_styled(
+        format!("Creator v{}", env!("CARGO_PKG_VERSION")),
+        BaseColor::Magenta.dark(),
+    );
+    let mut text = TextView::new("").align(Align::center());
+    text.set_content(sstr);
+    layout.add_child(text);
+
+    let dialog = Dialog::around(layout).title(title);
+    OnEventView::new(dialog).on_event(Key::Esc, |cursive_inst| {
+        if cursive_inst.screen_mut().len() > 1 {
+            cursive_inst.pop_layer();
+        } else {
+            cursive_inst.quit()
+        }
+    }) // Return OnEventView
+}
+
+// Returns a dialog with the provided title and view
+fn build_dialog(title: &str, view: impl View) -> OnEventView<Dialog> {
+    let mut layout = LinearLayout::vertical();
+    layout.add_child(view);
+
+    let dialog = Dialog::around(layout).title(title);
+    OnEventView::new(dialog).on_event(Key::Esc, |cursive_inst| {
+        if cursive_inst.screen_mut().len() > 1 {
+            cursive_inst.pop_layer();
+        } else {
+            cursive_inst.quit()
+        }
+    }) // Return OnEventView
+}
+
 /// Return a SelectView constructed from the folder names in the provided path
-fn build_select_view(dir: &str) -> SelectView {
-    let mut select = SelectView::new()
+fn build_select_view(dir: &str) -> Result<SelectView, String> {
+    let select = SelectView::new()
         // Center the text horizontally
         .h_align(HAlign::Center)
         // Use keyboard to jump to the pressed letters
@@ -167,18 +193,16 @@ fn build_select_view(dir: &str) -> SelectView {
 
     // If the dir does not exist write a message
     if !Path::new(dir).exists() {
-        select.add_item(format!("Directory {} does not exist", dir), String::new());
-        return select;
+        return Err(format!("Directory {dir} does not exist"));
     }
-        
+
     // List the dirs
     let templ_dir = DirectoryAnalyzer::new(dir);
     let (_, directs) = templ_dir.get_items();
-    
+
     // If no dirs found write a message
     if directs.is_empty() {
-        select.add_item(format!("Directory {} is empty", dir), String::new());
-        return select;
+        return Err(format!("Directory {dir} is empty").to_string());
     }
 
     let mut str_paths: Vec<String> = Vec::new();
@@ -186,8 +210,7 @@ fn build_select_view(dir: &str) -> SelectView {
         let s = d.file_name().unwrap().to_str().unwrap().to_string();
         str_paths.push(s);
     }
-    select.add_all_str(str_paths);
-    select
+    Ok(select.with_all_str(str_paths))
 }
 
 /// The function for the future use that will exit the application after a certain time
