@@ -5,7 +5,22 @@
 		}
     ],
     "settings": {
-        "rust-analyzer.check.command": "clippy"
+        "rust-analyzer.check.command": "clippy",
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Debug Rust",
+                "type": "lldb",
+                "request": "launch",
+                "program": "${workspaceFolder}/target/debug/${workspaceFolderBasename}",
+                "args": [],
+                "cwd": "${workspaceFolder}",
+                "console": "integratedTerminal"  // Output goes to the terminal
+            }
+        ],
+        "compounds": []
+    }
     },
     "tasks": {
         "version": "2.0.0",
@@ -14,7 +29,12 @@
                 "label": "Run",
                 "type": "shell",
                 "command": "cargo",
-                "args": ["run"]
+                "args": ["run"],
+                "options": {
+                    "env": {
+                        "RUST_BACKTRACE": "1"
+                    }
+                }
             },
             {
                 "label": "Package",
