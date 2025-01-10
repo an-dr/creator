@@ -7,12 +7,12 @@ opt-level = 1
 [package]
 edition = "2021"
 name = "creator"
-version = "0.3.0"
+version = "0.4.0"
 
 [dependencies]
-cursive = { version = "0.21", features = ["toml"] }
+cursive = { version = "0.21.1", features = ["toml"] }
 directories = "5.0.1"
-log = "0.4"
-regex = "1.9"
+log = "0.4.24"
+regex = "1.11.1"
 simplelog = "0.12.2"
-walkdir = "2.5"
+walkdir = "2.5.0"
