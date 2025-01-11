@@ -46,8 +46,7 @@ pub fn get_storage_path() -> String {
 
             // create the directory if it does not exist
             if !std::path::Path::new(&unfolded).exists() {
-                std::fs::create_dir_all(&unfolded)
-                    .expect("Cannot create storage directory");
+                std::fs::create_dir_all(&unfolded).expect("Cannot create storage directory");
                 println!("Created storage directory: {}", unfolded);
             }
             return unfolded;
