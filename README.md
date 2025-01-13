@@ -1,18 +1,22 @@
 # **creator** - start a new project not from scratch
 
-
+<p align="center">
 <img src="docs/README/logo.drawio.png" alt="logo" width="500"/>
+</p>
 
 <!-- table for screenshots -->
 
 [![Version](https://img.shields.io/github/v/tag/an-dr/creator?filter=v*&label=Version&color=67cdcc)](https://github.com/an-dr/creator/releases)
 
-![screenshot1](docs/README/screen1.png)
-
 **Creator** is a TUI application designed to simplify starting new projects using user-defined templates.
 
-| ![screenshot1](docs/README/screen2.png) | ![screenshot2](docs/README/screen3.png) |
-|---|---|
+<p align="center">
+<img src="docs/README/screen1.png" alt="screenshot1" width="600"/>
+</p>
+
+
+| ![screenshot2](docs/README/screen2.png) | ![screenshot3](docs/README/screen3.png) |
+| --------------------------------------- | --------------------------------------- |
 
 
 [Contributions](#-contribute) are welcome! Feel free to submit feature requests or bug reports.
