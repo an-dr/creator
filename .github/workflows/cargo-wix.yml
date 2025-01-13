@@ -6,7 +6,7 @@ on:
       release:
         description: 'Whether to build in release mode'
         required: false
-        default: 'true'
+        default: true
         type: boolean
 
   workflow_dispatch:
