@@ -6,10 +6,7 @@
 
 [![Version](https://img.shields.io/github/v/tag/an-dr/creator?filter=v*&label=Version&color=67cdcc)](https://github.com/an-dr/creator/releases)
 
-
 **Creator** is a TUI application designed to simplify starting new projects using user-defined templates.
-
-⚠️ WARNING: This project is a work in progress and may contain unhandled exceptions or bugs. Only the "happy path" is guaranteed to work 😅.
 
 Contributions are welcome! Feel free to submit feature requests or bug reports.
 
@@ -33,7 +30,7 @@ For the application design and architecture see [docs/design.md](docs/design.md)
 1. Copy the application to your desired location.
 2. Set up templates:
     - Place your templates in `~/.creator-templates`, or
-    - Define a custom location using the `CREATOR_STORAGE` environment variable.
+    - Define a custom location using the `CREATOR_TEMPLATES` environment variable.
 3. Add Creator to PATH:
     - Ensure the application directory is included in your system's PATH.
 4. Run Creator:
