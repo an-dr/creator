@@ -15,11 +15,30 @@ mod creator;
 mod directory_analyzer;
 mod environment;
 mod tui;
+use log::*;
+use simplelog::*;
+use std::fs::File;
+use std::panic;
+
+fn init_log() {
+    CombinedLogger::init(vec![WriteLogger::new(
+        LevelFilter::Info,
+        Config::default(),
+        File::create("creator.log").unwrap(),
+    )])
+    .unwrap();
+
+    debug!("Debug build: logging enabled");
+    panic::set_hook(Box::new(|e| {
+        error!("{e}");
+    }));
+}
 
 fn run() {
     tui::run();
 }
 
 fn main() {
+    init_log();
     run();
 }

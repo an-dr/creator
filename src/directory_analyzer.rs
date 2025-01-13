@@ -102,7 +102,7 @@ impl DirectoryAnalyzer {
             "{}(.*?){}",
             app_config::TEMPLATE_VAR_PREFIX,
             app_config::TEMPLATE_VAR_SUFFIX
-        );
+        ).replace("{", "\\{").replace("}", "\\}");
         let re = Regex::new(&pattern).expect("Matching pattern must be accepted");
         for caps in re.captures_iter(text) {
             if let Some(var_name) = caps.get(1) {
