@@ -41,10 +41,15 @@ jobs:
         run: |
           $release = $env:GITHUB_EVENT_INPUTS_RELEASE -eq "true"
           if ($release) {
-            cargo wix --release
+            cargo wix --release -ext WixUIExtension
           } else {
-            cargo wix
+            cargo wix -ext WixUIExtension
           }
+
+      - name: Check target Dir
+        run: |
+          cd target\wix
+          Get-ChildItem -Recurse
 
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v3
