@@ -54,6 +54,10 @@ jobs:
           path: artifacts/**
 
 
+  build-wix-installer:
+    name: Build Windows Installer
+    uses: ./.github/workflows/cargo-wix.yml
+
   release:
     name: Create GitHub Release
     needs: build
@@ -69,6 +73,12 @@ jobs:
         with:
           path: ./artifacts
 
+      - name: ⬇️ Download MSI installer
+        uses: actions/download-artifact@v3
+        with:
+          name: WinInstaller
+          path: ./installer
+
       - name: 🚀 Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
@@ -77,5 +87,6 @@ jobs:
           gh release create "$VERSION" \
             ./artifacts/x86_64-unknown-linux-musl/** \
             ./artifacts/x86_64-pc-windows-gnu/** \
+            ./installer/*.msi \
             --title "Release $VERSION" \
             --notes "Automated release of version $VERSION."

@@ -54,5 +54,5 @@ jobs:
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Installer
+          name: WinInstaller
           path: ./target/wix/*.msi
