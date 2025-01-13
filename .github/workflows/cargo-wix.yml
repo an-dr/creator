@@ -39,10 +39,11 @@ jobs:
 
       - name: Build installer
         run: |
-          if ${{ inputs.release }} == 'true'; then
+          if [ "${{ github.event.inputs.release }}" == "true" ]; then
             cargo wix --release
           else
             cargo wix
+          fi
 
       - name: Upload MSI artifact
         uses: actions/upload-artifact@v3
