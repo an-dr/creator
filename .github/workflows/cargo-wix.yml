@@ -1,0 +1,55 @@
+name: Build with cargo wix
+
+on:
+  workflow_call:
+    inputs:
+      release:
+        description: 'Whether to build in release mode'
+        required: false
+        default: 'true'
+        type: boolean
+    secrets:
+      github_token:
+        description: 'GitHub Token for accessing repository'
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Whether to build in release mode'
+        required: false
+        default: true
+
+jobs:
+  build-wix-installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install WiX Toolset
+        run: |
+          choco install wixtoolset --no-progress
+
+      - name: Install cargo wix
+        run: cargo install cargo-wix
+
+      - name: Build installer
+        run: |
+          if ${{ inputs.release }} == 'true'; then
+            cargo wix --release
+          else
+            cargo wix
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Installer
+          path: ./target/*.msi
