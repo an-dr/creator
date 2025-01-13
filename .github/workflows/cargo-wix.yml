@@ -8,10 +8,6 @@ on:
         required: false
         default: 'true'
         type: boolean
-    secrets:
-      github_token:
-        description: 'GitHub Token for accessing repository'
-        required: true
 
   workflow_dispatch:
     inputs:
