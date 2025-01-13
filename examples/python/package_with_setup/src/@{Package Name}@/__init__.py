@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # *************************************************************************
 #
-# Copyright (c) 2025 Developer. All rights reserved.
+# Copyright (c) 2025 @{Author}@. All rights reserved.
 #
 # *************************************************************************
 
-__version__ = "1.0.0"
+__version__ = "@{Version}@"

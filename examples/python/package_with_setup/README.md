@@ -1,5 +1,7 @@
 # @{Package Name}@
 
+![Version](https://img.shields.io/badge/Version-@{Version}@-blue)
+
 Description.
 
 ## Installation

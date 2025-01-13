@@ -102,7 +102,9 @@ impl DirectoryAnalyzer {
             "{}(.*?){}",
             app_config::TEMPLATE_VAR_PREFIX,
             app_config::TEMPLATE_VAR_SUFFIX
-        ).replace("{", "\\{").replace("}", "\\}");
+        )
+        .replace("{", "\\{")
+        .replace("}", "\\}");
         let re = Regex::new(&pattern).expect("Matching pattern must be accepted");
         for caps in re.captures_iter(text) {
             if let Some(var_name) = caps.get(1) {
@@ -110,7 +112,7 @@ impl DirectoryAnalyzer {
             }
         }
     }
-    
+
     /// Return a vector of sorted variables
     pub fn scan_variables(&self) -> Vec<String> {
         let mut vars: HashSet<String> = HashSet::new();
