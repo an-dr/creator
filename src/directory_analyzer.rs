@@ -110,7 +110,7 @@ impl DirectoryAnalyzer {
             }
         }
     }
-    
+
     /// Return a vector of sorted variables
     pub fn scan_variables(&self) -> Vec<String> {
         let mut vars: HashSet<String> = HashSet::new();
