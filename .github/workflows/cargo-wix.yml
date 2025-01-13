@@ -41,9 +41,9 @@ jobs:
         run: |
           $release = $env:GITHUB_EVENT_INPUTS_RELEASE -eq 'true'
           if ($release) {
-            cargo wix --release
+            cargo wix --release --target x86_64-pc-windows-gnu
           } else {
-            cargo wix
+            cargo wix --target x86_64-pc-windows-gnu
           }
 
       - name: Check target Dir
