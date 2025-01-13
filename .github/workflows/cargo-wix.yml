@@ -39,11 +39,11 @@ jobs:
 
       - name: Build installer
         run: |
-          $release = $env:GITHUB_EVENT_INPUTS_RELEASE -eq "true"
+          $release = $env:GITHUB_EVENT_INPUTS_RELEASE -eq 'true'
           if ($release) {
-            cargo wix --release -ext WixUIExtension
+            cargo wix --release
           } else {
-            cargo wix -ext WixUIExtension
+            cargo wix
           }
 
       - name: Check target Dir
@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Installer
-          path: ./target/*.msi
+          path: ./target/wix/*.msi
