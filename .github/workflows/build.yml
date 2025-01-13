@@ -57,7 +57,7 @@ jobs:
     name: Build Windows Installer
     uses: ./.github/workflows/cargo-wix.yml
     with:
-      release: 'true'
+      release: true
 
   release:
     name: Create GitHub Release
