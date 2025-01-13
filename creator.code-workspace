@@ -33,13 +33,13 @@
         "terminal.ansiBrightMagenta": "#CC00FF",
         "terminal.ansiBrightRed": "#FF0000",
         "terminal.ansiBrightWhite": "#FFFFFF",
-        "terminal.ansiBrightYellow": "#FF0099",
+        "terminal.ansiBrightYellow": "#FEDC2B",
         "terminal.ansiCyan": "#00FFFF",
         "terminal.ansiGreen": "#33FF00",
         "terminal.ansiMagenta": "#CC00FF",
         "terminal.ansiRed": "#FF0000",
         "terminal.ansiWhite": "#D0D0D0",
-        "terminal.ansiYellow": "#FF0099",
+        "terminal.ansiYellow": "#d9bd26",
         "terminal.background": "#000000",
         "terminal.foreground": "#D0D0D0",
         "terminalCursor.background": "#D0D0D0",
@@ -58,7 +58,8 @@
                 "args": ["run"],
                 "options": {
                     "env": {
-                        "RUST_BACKTRACE": "1"
+                        "RUST_BACKTRACE": "1",
+                        "CREATOR_TEMPLATES": "${workspaceFolder}/examples"
                     }
                 }
             },

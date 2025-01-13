@@ -57,17 +57,12 @@ impl Creator {
 
         for d in dirs {
             // Get the destination path
-            let rel_path = d
-                .strip_prefix(&self.source)
-                .expect("The prefix should be the same");
+            let rel_path = d.strip_prefix(&self.source).expect("The prefix should be the same");
             let mut dest_path = self.destination.clone();
             dest_path.push(rel_path);
 
             // Replace the variables in the path
-            let mut dest_path_str = dest_path
-                .to_str()
-                .expect("The path should be valid")
-                .to_string();
+            let mut dest_path_str = dest_path.to_str().expect("The path should be valid").to_string();
             for (var_name, var_value) in &self.source_variable_values {
                 let new_var_name = format!(
                     "{}{}{}",
@@ -84,19 +79,14 @@ impl Creator {
 
         for f in files {
             // Get the destination path
-            let rel_path = f
-                .strip_prefix(&self.source)
-                .expect("The prefix should be the same");
+            let rel_path = f.strip_prefix(&self.source).expect("The prefix should be the same");
             debug!("Relative path: {:?}", rel_path);
             let mut dest_path = self.destination.clone();
             dest_path.push(rel_path);
             debug!("Source path: {:?}", f);
 
             // Replace the variables in the path
-            let mut dest_path_str = dest_path
-                .to_str()
-                .expect("The path should be valid")
-                .to_string();
+            let mut dest_path_str = dest_path.to_str().expect("The path should be valid").to_string();
             for (var_name, var_value) in &self.source_variable_values {
                 let new_var_name = format!(
                     "{}{}{}",

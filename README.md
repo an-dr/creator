@@ -1,6 +1,11 @@
-# creator
+# **creator** - start a new project not from scratch
 
-![Version](https://img.shields.io/github/v/tag/an-dr/creator?filter=v*&label=Version&color=blue)
+
+<img src="docs/README/logo.drawio.png" alt="logo" width="500"/>
+
+
+[![Version](https://img.shields.io/github/v/tag/an-dr/creator?filter=v*&label=Version&color=67cdcc)](https://github.com/an-dr/creator/releases)
+
 
 **Creator** is a TUI application designed to simplify starting new projects using user-defined templates.
 
@@ -14,7 +19,7 @@ For the application design and architecture see [docs/design.md](docs/design.md)
 
 ## Table of Contents
 
-- [creator](#creator)
+- [**creator** - start a new project not from scratch](#creator---start-a-new-project-not-from-scratch)
     - [Table of Contents](#table-of-contents)
     - [🚀 Installation](#-installation)
     - [🌱 Environment variables](#-environment-variables)
@@ -39,7 +44,7 @@ For the application design and architecture see [docs/design.md](docs/design.md)
 
 ## 🌱 Environment variables
 
-- `CREATOR_STORAGE`: Specifies the path to your templates directory.
+- `CREATOR_TEMPLATES`: Specifies the path to your templates directory.
 
 ## 📂 Template Structure
 
@@ -70,9 +75,15 @@ Note: dotfiles and directories are ignored by the application.
 
 You can define variables within template files and filenames using the following syntax:
 
-- `#var_NAME_OF_VAR#` - This placeholder will be replaced with user-defined values during project creation.
+- `@{Name of a Variable}@` - This placeholder will be replaced with user-defined values during project creation. And will be prompted like this:
 
-For the example see: [tests/test_storage](tests/test_storage)
+```plaintext
+Name of a Variable: ________
+```
+
+Yes, you can use spaces in the variable name! 😄
+
+For the example see: [examples](examples)
 
 ## 💡 Notes
 
