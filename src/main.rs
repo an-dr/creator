@@ -22,13 +22,14 @@ use std::panic;
 
 fn init_log() {
     CombinedLogger::init(vec![WriteLogger::new(
-        LevelFilter::Info,
+        LevelFilter::Debug,
         Config::default(),
         File::create("creator.log").unwrap(),
     )])
     .unwrap();
 
     debug!("Debug build: logging enabled");
+
     panic::set_hook(Box::new(|e| {
         error!("{e}");
     }));
@@ -39,6 +40,8 @@ fn run() {
 }
 
 fn main() {
-    init_log();
+    if cfg!(debug_assertions) {
+        init_log();
+    }
     run();
 }
