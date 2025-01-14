@@ -9,8 +9,8 @@
 // e-mail:  mail@agramakov.me
 //
 // *************************************************************************
-use crate::app_config;
 use crate::directory_analyzer::DirectoryAnalyzer;
+use crate::environment::get_storage_path;
 use log::debug;
 use std::collections::HashMap;
 use std::{
@@ -25,6 +25,11 @@ pub struct Creator {
 }
 
 impl Creator {
+    pub const TEMPLATE_VAR_PREFIX: &str = "@{";
+    pub const TEMPLATE_VAR_SUFFIX: &str = "}@";
+    pub const CREATOR_ENV_VAR: &str = "CREATOR_TEMPLATES";
+    pub const DEFAULT_CREATOR_ENV_VAR_VALUE: &str = "~/.creator-templates";
+
     pub fn new(src: &Path, dest: &Path) -> Self {
         let mut s = Self {
             source: PathBuf::from(src),
@@ -66,9 +71,9 @@ impl Creator {
             for (var_name, var_value) in &self.source_variable_values {
                 let new_var_name = format!(
                     "{}{}{}",
-                    app_config::TEMPLATE_VAR_PREFIX,
+                    Self::TEMPLATE_VAR_PREFIX,
                     var_name,
-                    app_config::TEMPLATE_VAR_SUFFIX
+                    Self::TEMPLATE_VAR_SUFFIX
                 );
                 dest_path_str = dest_path_str.replace(&new_var_name, var_value);
             }
@@ -90,9 +95,9 @@ impl Creator {
             for (var_name, var_value) in &self.source_variable_values {
                 let new_var_name = format!(
                     "{}{}{}",
-                    app_config::TEMPLATE_VAR_PREFIX,
+                    Self::TEMPLATE_VAR_PREFIX,
                     var_name,
-                    app_config::TEMPLATE_VAR_SUFFIX
+                    Self::TEMPLATE_VAR_SUFFIX
                 );
                 dest_path_str = dest_path_str.replace(&new_var_name, var_value);
             }
@@ -107,9 +112,9 @@ impl Creator {
             for (var_name, var_value) in &self.source_variable_values {
                 let var_name = format!(
                     "{}{}{}",
-                    app_config::TEMPLATE_VAR_PREFIX,
+                    Self::TEMPLATE_VAR_PREFIX,
                     var_name,
-                    app_config::TEMPLATE_VAR_SUFFIX
+                    Self::TEMPLATE_VAR_SUFFIX
                 );
                 new_content = new_content.replace(&var_name, var_value);
             }
@@ -126,5 +131,13 @@ impl Creator {
 
     pub fn get_var_values(&self) -> &HashMap<String, String> {
         &self.source_variable_values
+    }
+
+    pub fn create_template_dir_if_not_exists() -> io::Result<()> {
+        let storage = get_storage_path();
+        if !Path::new(&storage).exists() {
+            fs::create_dir_all(storage.clone())?;
+        }
+        Ok(())
     }
 }

@@ -10,11 +10,11 @@
 //
 // *************************************************************************
 
-mod app_config;
 mod creator;
 mod directory_analyzer;
 mod environment;
 mod tui;
+use creator::Creator;
 use log::*;
 use simplelog::*;
 use std::fs::File;
@@ -43,5 +43,6 @@ fn main() {
     if cfg!(debug_assertions) {
         init_log();
     }
+    Creator::create_template_dir_if_not_exists().unwrap();
     run();
 }
