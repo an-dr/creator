@@ -11,7 +11,7 @@
 // *************************************************************************
 #![allow(dead_code)] // This module will be reused
 
-use crate::app_config;
+use crate::creator::Creator;
 use regex::Regex;
 use std::{
     collections::HashSet,
@@ -98,11 +98,9 @@ impl DirectoryAnalyzer {
     }
 
     fn search_and_append(text: &str, vars_to_append: &mut HashSet<String>) {
-        let pattern = format!(
-            "{}(.*?){}",
-            app_config::TEMPLATE_VAR_PREFIX,
-            app_config::TEMPLATE_VAR_SUFFIX
-        );
+        let pattern = format!("{}(.*?){}", Creator::TEMPLATE_VAR_PREFIX, Creator::TEMPLATE_VAR_SUFFIX)
+            .replace("{", "\\{")
+            .replace("}", "\\}");
         let re = Regex::new(&pattern).expect("Matching pattern must be accepted");
         for caps in re.captures_iter(text) {
             if let Some(var_name) = caps.get(1) {
@@ -110,7 +108,7 @@ impl DirectoryAnalyzer {
             }
         }
     }
-    
+
     /// Return a vector of sorted variables
     pub fn scan_variables(&self) -> Vec<String> {
         let mut vars: HashSet<String> = HashSet::new();

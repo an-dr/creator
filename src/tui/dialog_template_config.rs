@@ -82,10 +82,16 @@ fn create_from_template_and_show_success(cursive: &mut Cursive, srs: &str, dest:
     let src = creator.get_source().to_str().unwrap();
     let dsc = creator.get_destination().to_str().unwrap();
     results.push_str(&format!("Source: {src}\n"));
-    results.push_str(&format!("Destination: {dsc}\n"));
+    results.push_str(&format!("Destination: {dsc}\n\n"));
 
-    for (k, v) in creator.get_var_values() {
-        results.push_str(&format!("{k}: {v}\n"));
+    // Write the variables to the results. Sorted by key
+    let var_vals = creator.get_var_values();
+    let mut sorted_keys: Vec<String> = var_vals.keys().cloned().collect();
+    sorted_keys.sort();
+    for key in sorted_keys {
+        if let Some(value) = var_vals.get(&key) {
+            results.push_str(&format!("{key}: {value}\n"));
+        }
     }
     // Show results in a new dialog
     let dialog = builders::build_success(cursive, Some(&results));
