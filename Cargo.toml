@@ -1,4 +1,6 @@
 [profile.release]
+codegen-units = 1
+lto = true
 opt-level = 3
 
 [profile.dev]
@@ -7,7 +9,7 @@ opt-level = 1
 [package]
 edition = "2021"
 name = "creator"
-version = "1.0.0"
+version = "1.0.1"
 
 [dependencies]
 cursive = {version = "0.21", features = [ "toml" ]}
