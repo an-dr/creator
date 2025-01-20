@@ -56,7 +56,7 @@ jobs:
 
   build-wix-installer:
     name: Build Windows Installer
-    uses: ./.github/workflows/cargo-wix.yml
+    uses: ./.github/workflows/win-package-msi.yml
     with:
       release: true
 

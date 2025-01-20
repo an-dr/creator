@@ -61,7 +61,7 @@
     <Product
         Id='*'
         Name='creator'
-        UpgradeCode='3E52C9CE-51CA-409C-B9B9-14ACD731E163'
+        UpgradeCode='1AB921C1-CFF3-405D-9663-23E3615A2D64'
         Manufacturer='Andrei Gramakov'
         Language='1033'
         Codepage='1252'
@@ -103,7 +103,7 @@
                     </Component>
                     
                     <Directory Id='Bin' Name='bin'>
-                        <Component Id='Path' Guid='08549E6A-0EA6-40DD-B1BA-EEE61F429751' KeyPath='yes'>
+                        <Component Id='Path' Guid='021340FB-1EBE-4621-BC75-FF72A45FBE51' KeyPath='yes'>
                             <Environment
                                 Id='PATH'
                                 Name='PATH'

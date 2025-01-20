@@ -1,4 +1,4 @@
-name: Build with cargo wix
+name: Build MSI with cargo wix
 
 on:
   workflow_call:
