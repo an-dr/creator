@@ -69,12 +69,7 @@ impl Creator {
             // Replace the variables in the path
             let mut dest_path_str = dest_path.to_str().expect("The path should be valid").to_string();
             for (var_name, var_value) in &self.source_variable_values {
-                let new_var_name = format!(
-                    "{}{}{}",
-                    Self::TEMPLATE_VAR_PREFIX,
-                    var_name,
-                    Self::TEMPLATE_VAR_SUFFIX
-                );
+                let new_var_name = format!("{}{}{}", Self::TEMPLATE_VAR_PREFIX, var_name, Self::TEMPLATE_VAR_SUFFIX);
                 dest_path_str = dest_path_str.replace(&new_var_name, var_value);
             }
 
@@ -93,12 +88,7 @@ impl Creator {
             // Replace the variables in the path
             let mut dest_path_str = dest_path.to_str().expect("The path should be valid").to_string();
             for (var_name, var_value) in &self.source_variable_values {
-                let new_var_name = format!(
-                    "{}{}{}",
-                    Self::TEMPLATE_VAR_PREFIX,
-                    var_name,
-                    Self::TEMPLATE_VAR_SUFFIX
-                );
+                let new_var_name = format!("{}{}{}", Self::TEMPLATE_VAR_PREFIX, var_name, Self::TEMPLATE_VAR_SUFFIX);
                 dest_path_str = dest_path_str.replace(&new_var_name, var_value);
             }
             debug!("Dest path: {:?}\n", dest_path_str);
@@ -110,12 +100,7 @@ impl Creator {
             let content = fs::read_to_string(&dest_path_str)?;
             let mut new_content = content.clone();
             for (var_name, var_value) in &self.source_variable_values {
-                let var_name = format!(
-                    "{}{}{}",
-                    Self::TEMPLATE_VAR_PREFIX,
-                    var_name,
-                    Self::TEMPLATE_VAR_SUFFIX
-                );
+                let var_name = format!("{}{}{}", Self::TEMPLATE_VAR_PREFIX, var_name, Self::TEMPLATE_VAR_SUFFIX);
                 new_content = new_content.replace(&var_name, var_value);
             }
             // Write the new content

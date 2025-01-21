@@ -33,6 +33,7 @@
         - [Storage Layout](#storage-layout)
         - [Template Variables](#template-variables)
     - [💡 Notes](#-notes)
+    - [❤️ Aknowledgements](#️-aknowledgements)
     - [🤝 Contribute](#-contribute)
     - [License](#license)
 
@@ -102,6 +103,13 @@ Yes, you can use spaces in the variable name! 😄
 - **Customizable Variables**: Enhance templates by leveraging variable placeholders for dynamic project creation.
 
 For questions, feedback, or contributions, don't hesitate to reach out!
+
+## ❤️ Aknowledgements
+
+| Contributor | Contribution |
+| ----------- | ------------ |
+| [@Arteiii](https://github.com/Arteiii) | 🪟 Windows installer [#5](https://github.com/an-dr/creator/pull/5) <br> ⚙️ Actions improvements [#5](https://github.com/an-dr/creator/pull/5)
+| [@zamazan4ik](https://github.com/zamazan4ik) | 💡 Optimization proposals [#9](https://github.com/an-dr/creator/issues/9) |
 
 ## 🤝 Contribute
 
