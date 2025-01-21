@@ -1,0 +1,58 @@
+name: Build MSI with cargo wix
+
+on:
+  workflow_call:
+    inputs:
+      release:
+        description: 'Whether to build in release mode'
+        required: false
+        default: true
+        type: boolean
+
+  workflow_dispatch:
+    inputs:
+      release:
+        description: 'Whether to build in release mode'
+        required: false
+        default: true
+
+jobs:
+  build-wix-installer:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          cache: 'true'
+          toolchain: stable
+
+      - name: Install WiX Toolset
+        run: |
+          choco install wixtoolset --no-progress
+
+      - name: Install cargo wix
+        run: cargo install cargo-wix
+
+      - name: Build installer
+        run: |
+          $release = $env:GITHUB_EVENT_INPUTS_RELEASE -eq 'true'
+          if ($release) {
+            cargo wix --release --target x86_64-pc-windows-gnu
+          } else {
+            cargo wix --target x86_64-pc-windows-gnu
+          }
+
+      - name: Check target Dir
+        run: |
+          cd target\wix
+          Get-ChildItem -Recurse
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: WinInstaller
+          path: ./target/wix/*.msi
