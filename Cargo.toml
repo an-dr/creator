@@ -7,13 +7,16 @@ opt-level = 3
 opt-level = 1
 
 [package]
-edition = "2021"
-name = "creator"
-version = "1.0.2"
+authors = [ "Andrei Gramakov <mail@agramakov.me>" ]
+categories = [ "development-tools" ]
 description = "Application for creation new files and projects from user templates"
-repository = "https://github.com/an-dr/creator"
+edition = "2021"
+keywords = [ "tui", "template", "generator", "project", "creator" ]
 license = "MIT"
-authors = ["Andrei Gramakov <mail@agramakov.me>"]
+name = "creator-app"
+readme = "README.md"
+repository = "https://github.com/an-dr/creator"
+version = "1.0.2"
 
 [dependencies]
 cursive = {version = "0.21", features = [ "toml" ]}
